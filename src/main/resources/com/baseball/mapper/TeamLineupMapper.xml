@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baseball.game.mapper.TeamLineupMapper">
+    
+    <!-- 기본 라인업 조회 (컴퓨터용) -->
+    <select id="findDefaultLineupByTeam" resultType="com.baseball.game.dto.TeamLineup">
+        SELECT * FROM team_lineup 
+        WHERE team_name = #{teamName}
+        AND is_active = true
+        ORDER BY position
+    </select>
+    
+    <!-- 유저 커스텀 라인업 조회 -->
+    <select id="findCustomLineupByUserAndTeam" resultType="com.baseball.game.dto.TeamLineup">
+        SELECT * FROM team_lineup 
+        WHERE team_name = #{teamName}
+
+        AND user_id = #{userId}
+        AND is_active = true
+        ORDER BY position
+    </select>
+    
+    <!-- 유저의 기존 커스텀 라인업 삭제 -->
+    <delete id="deleteCustomLineupByUserAndTeam">
+        DELETE FROM team_lineup 
+        WHERE team_name = #{teamName} 
+        AND lineup_type = 'USER_CUSTOM' 
+        AND user_id = #{userId}
+    </delete>
+    
+    <!-- 커스텀 라인업 저장 -->
+    <insert id="insertCustomLineup" parameterType="com.baseball.game.dto.TeamLineup">
+        INSERT INTO team_lineup (
+            team_name, lineup_type, user_id, position, 
+            player_name, player_id, is_active, created_at, updated_at
+        ) VALUES (
+            #{teamName}, 'USER_CUSTOM', #{userId}, #{position}, 
+            #{playerName}, #{playerId}, true, NOW(), NOW()
+        )
+    </insert>
+    
+    <!-- 특정 유저의 모든 커스텀 라인업 조회 -->
+    <select id="findAllCustomLineupsByUser" resultType="com.baseball.game.dto.TeamLineup">
+        SELECT * FROM team_lineup 
+        WHERE lineup_type = 'USER_CUSTOM' 
+        AND user_id = #{userId}
+        AND is_active = true
+        ORDER BY team_name, position
+    </select>
+    
+    <!-- 팀별 사용 가능한 선수 목록 조회 -->
+    <select id="findAvailablePlayersByTeam" resultType="String">
+        SELECT Name FROM player 
+        WHERE Team = #{teamName} 
+        AND B_P = 'B'  <!-- 타자만 -->
+        ORDER BY Name
+    </select>
+    
+</mapper> 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baseball.game.mapper.CommentMapper">
+	<select id="getComment" resultType="com.baseball.game.dto.CommentDto">
+		select * from comment where boardNo=#{boardNo}
+	</select>
+	<insert id="comment">
+		insert into comment(commentId,boardNo,writer,text) values (#{commentId},#{boardNo},#{writer},#{text})
+	</insert>
+	<delete id="delcom">
+		delete from comment where boardNo=#{boardNo} and commentId=#{commentId}
+	</delete>
+	<update id="modify">
+		update comment set text=#{text} where boardNo=#{boardNo} and commentId=#{commentId}
+	</update>
+</mapper>

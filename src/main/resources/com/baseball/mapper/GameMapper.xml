@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baseball.game.mapper.GameMapper">
+	
+	
+	<!-- 게임 정보 -->
+	<insert id="insertGame" parameterType="com.baseball.game.dto.GameDto">
+		INSERT INTO Game (game_id, home_team, away_team, inning, is_top, out, strike, ball, home_score, away_score, is_user_offense, is_game_over, winner, max_inning)
+		VALUES (#{gameId}, #{homeTeam}, #{awayTeam}, #{inning}, #{isTop}, #{out}, #{strike}, #{ball}, #{homeScore}, #{awayScore}, #{isUserOffense}, #{isGameOver}, #{winner}, #{maxInning})
+	</insert>
+
+	<select id="selectGameById" parameterType="String" resultType="com.baseball.game.dto.GameDto">
+		SELECT * FROM Game WHERE game_id = #{gameId}
+	</select>
+
+	<update id="updateGame" parameterType="com.baseball.game.dto.GameDto">
+		UPDATE Game
+		SET inning = #{inning}, is_top = #{isTop}, out = #{out}, strike = #{strike}, ball = #{ball},
+			home_score = #{homeScore}, away_score = #{awayScore}, is_user_offense = #{isUserOffense},
+			is_game_over = #{isGameOver}, winner = #{winner}, max_inning = #{maxInning}
+		WHERE game_id = #{gameId}
+	</update>
+
+	<delete id="deleteGame" parameterType="String">
+		DELETE FROM Game WHERE game_id = #{gameId}
+	</delete>
+
+	<!-- 팀/선수 -->
+	<select id="selectAllTeams" resultType="com.baseball.game.dto.Team">
+		SELECT * FROM Team
+	</select>
+
+	<select id="selectBattersByTeam" parameterType="String" resultType="com.baseball.game.dto.Batter">
+		SELECT * FROM Batter WHERE team_id = #{teamId}
+	</select>
+
+	<select id="selectPitchersByTeam" parameterType="String" resultType="com.baseball.game.dto.Pitcher">
+		SELECT * FROM Pitcher WHERE team_id = #{teamId}
+	</select>
+
+	<!-- 주자 -->
+	<select id="selectRunnersByGame" parameterType="String" resultType="com.baseball.game.dto.Batter">
+		SELECT b.* FROM Runner r
+		JOIN Batter b ON r.player_id = b.player_id
+		WHERE r.game_id = #{gameId}
+	</select>
+
+</mapper>
